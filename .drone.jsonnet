@@ -9,6 +9,7 @@ local supybot_test(py_version) = {
             image: "python:" + py_version + "-bookworm",
             commands: [
                 "pip install limnoria",
+                "pip install -r requirements.txt",
                 "export PLUGIN_NAME=$(echo $DRONE_REPO_NAME | sed 's/^Limnoria-//i')",
                 "echo Set PLUGIN_NAME to $PLUGIN_NAME from $DRONE_REPO_NAME $DRONE_REPO_LINK",
                 "ln -s $(pwd) $PLUGIN_NAME",

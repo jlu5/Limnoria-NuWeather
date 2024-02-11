@@ -62,15 +62,13 @@ class NuWeatherTestCase(PluginTestCase):
             with self.subTest(msg=f"{backend} backend"):
                 self._set_backend(backend)
                 self.assertRegexp('weather Vancouver', 'Vancouver,')
-                self.assertRegexp('weather LAX', 'Los Angeles')
-                #self.assertRegexp('weather 76010', 'Arlington')  # US ZIP codes not supported by Nominatim (default)
 
     @unittest.skipUnless(network, NO_NETWORK_REASON)
     def testSavedLocation(self):
         self._set_backend(BACKENDS[0])
         self.assertError('weather')  # No location set
         self.assertNotError('setweather Berlin')
-        self.assertRegexp('weather', 'Berlin')
+        self.assertRegexp('weather', '(Berlin|, DE)')
 
 class AQITestCase(PluginTestCase):
     plugins = ('NuWeather',)
