@@ -13,6 +13,28 @@ A weather plugin for Limnoria. It supports multiple weather and geocoding backen
 - [Google Maps](https://developers.google.com/maps/documentation/geocoding/start) (API key required)
 - [OpenCage](https://opencagedata.com/) (API key required)
 
+#### Air Quality Index Backendsd
+- [aqicn.org](https://aqicn.org/city/beijing/) (API key required)
+
+## Install
+
+Due to technical limitations, installation via Limnoria's PluginDownloader or pip is currently unavailable.
+
+### Via Git checkout
+
+Clone the Git repository somewhere and add the *parent* directory to your bot's `config directories.plugins` setting.
+Make sure the directory that you save the plugin to matches the plugin name:
+
+```
+$ git clone https://github.com/jlu5/Limnoria-NuWeather NuWeather
+```
+
+After cloning, you can update your copy of the plugin in place by entering the NuWeather directory and running:
+
+```
+$ git pull
+```
+
 ## Quick start
 
 1) Pick your preferred weather backend: `config help plugins.NuWeather.defaultBackend`
