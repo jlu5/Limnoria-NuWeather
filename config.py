@@ -99,6 +99,10 @@ for backend in BACKENDS + GEOCODE_BACKENDS:
         conf.registerGlobalValue(NuWeather.apikeys, backend,
             registry.String("", _("""Sets the API key for %s.""") % backend, private=True))
 
+# aqicn is not a weather backend, so this is defined separately
+conf.registerGlobalValue(NuWeather.apikeys, 'aqicn',
+    registry.String("", _("""Sets the API key for aqicn.org."""), private=True))
+
 DEFAULT_FORMAT = ('\x02$location\x02 :: $c__condition $c__temperature '
                   '(Humidity: $c__humidity) | \x02Feels like:\x02 $c__feels_like '
                   '| \x02Wind\x02: $c__wind $c__wind_dir | \x02Wind gust\x02: $c__wind_gust '

@@ -72,6 +72,26 @@ class NuWeatherTestCase(PluginTestCase):
         self.assertNotError('setweather Berlin')
         self.assertRegexp('weather', 'Berlin')
 
+class AQITestCase(PluginTestCase):
+    plugins = ('NuWeather',)
+    if network:
+        def setUp(self):
+            super().setUp()
+
+            self.myVerbose = verbosity.MESSAGES
+
+            apikey = os.environ.get('AQICN_APIKEY')
+            if not apikey:
+                e = ("The aqicn API key has not been set. Please set the AQICN_APIKEY environment variable "
+                     "and try again.")
+                raise callbacks.Error(e)
+
+            conf.supybot.plugins.NuWeather.apikeys.aqicn.setValue(apikey)
+
+        def testAQI(self):
+            self.assertNotError("aqi Beijing")
+            self.assertNotError("aqi --geocode-backend native Los Angeles")
+
 # TODO: test geolookup code, using the separate command
 
 from . import formatter

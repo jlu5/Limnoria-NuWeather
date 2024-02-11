@@ -213,4 +213,30 @@ def get_dayname(ts, idx, *, tz=None, fallback=None):
         else:
             return 'Day_%d' % idx
 
+def format_aqi(aqino):
+    """Formats the given AQINO index."""
+    # Retrieved from http://aqicn.org/scale/ 20190603
+    f = lambda *args, **kwargs: ircutils.bold(ircutils.mircColor(*args, **kwargs))
 
+    if not isinstance(aqino, int):
+        return f(_(' %s No data ') % aqino,
+                    fg='white', bg='black')
+
+    if aqino <= 50:
+        return f(_(' %s (Good) ') % aqino,
+                    fg='white', bg='green')
+    elif aqino <= 100:
+        return f(_(' %s (Moderate) ') % aqino,
+                    fg='black', bg='yellow')
+    elif aqino <= 150:
+        return f(_(' %s (Unhealthy for Sensitive Groups) ') % aqino,
+                    fg='black', bg='orange')
+    elif aqino <= 200:
+        return f(_(' %s (Unhealthy) ') % aqino,
+                    fg='white', bg='red')
+    elif aqino <= 300:
+        return f(_(' %s (Very Unhealthy) ') % aqino,
+                    fg='white', bg='purple')
+    else:
+        return f(_(' %s (Hazardous) ') % aqino,
+                    fg='white', bg='brown')

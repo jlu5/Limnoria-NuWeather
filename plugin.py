@@ -583,6 +583,49 @@ class NuWeather(callbacks.Plugin):
         self.db.set(msg.prefix, location)
         irc.replySuccess()
 
+    @wrap([getopts({'geocode-backend': None}), "text"])
+    def aqi(self, irc, msg, args, optlist, location):
+        """[--geocode-backend <backend>] <location>
+
+        Looks up Air Quality Index information for <location> using aqicn.org.
+
+        --geocode-backend can be set to "native" or any geocoding backend supported by the NuWeather plugin. If nothing is given, this defaults to the backend set in 'plugins.nuweather.geocodeBackend'
+
+        --geocode-backend native refers aqicn's built-in city search, which supports basic city names as well as aqicn station IDs in the form "@1234".
+        """
+        apikey = self.registryValue("apiKeys.aqicn")
+        if not apikey:
+            irc.error("The API Key is not set. Please set it via the 'plugins.nuweather.apikeys.aqicn' config "
+                      "variable. You can sign up for an API key at https://aqicn.org/api", Raise=True)
+
+        # We can use aqicn.org's builtin search or one of NuWeather's geocoding backends
+        geocode_backend = dict(optlist).get('geocode-backend')
+        if geocode_backend not in {'', 'native'}:
+            result = self._geocode(location, geobackend=geocode_backend)
+
+            # Set location to geo:lat:lon, per https://aqicn.org/json-api/doc/#api-Geolocalized_Feed-GetGeolocFeed
+            location = 'geo:%s;%s' % (result[0], result[1])
+
+        url = 'https://api.waqi.info/feed/%s/?%s' % (utils.web.urlquote(location), utils.web.urlencode({'token': apikey}))
+        self.log.debug('AQI: using URL %s', url)
+
+        f = utils.web.getUrl(url)
+        data = json.loads(f.decode('utf-8'))
+
+        if data['status'] == 'error':
+            irc.error('Got API error: %s' % data['data'], Raise=True)
+        else:
+            # AQI value: usually a number, except for when there's no data (a literal '-')
+            aqino = data['data']['aqi']
+
+            placename = data['data']['city']['name']
+            infourl = data['data']['city']['url']
+            attribs = [obj['name'] for obj in data['data']['attributions']]
+
+            formatted_aqi = formatter.format_aqi(aqino)
+            s = format(_('%s :: %s %u; from %L'), ircutils.bold(placename), formatted_aqi, infourl, attribs)
+            irc.reply(s)
+
 Class = NuWeather
 
 
