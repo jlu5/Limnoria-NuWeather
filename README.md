@@ -13,7 +13,7 @@ A weather plugin for Limnoria. It supports multiple weather and geocoding backen
 - [Google Maps](https://developers.google.com/maps/documentation/geocoding/start) (API key required)
 - [OpenCage](https://opencagedata.com/) (API key required)
 
-#### Air Quality Index Backendsd
+#### Air Quality Index Backends
 - [aqicn.org](https://aqicn.org/city/beijing/) (API key required)
 
 ## Install
