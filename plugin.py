@@ -28,6 +28,7 @@
 ###
 import json
 import os
+import shutil
 import string
 import urllib.error
 
@@ -61,8 +62,12 @@ class NuWeather(callbacks.Plugin):
         self.db = accountsdb.AccountsDB("NuWeather", 'NuWeather.db', self.registryValue(accountsdb.CONFIG_OPTION_NAME))
         geocode_db_filename = conf.supybot.directories.data.dirize("NuWeather-geocode.json")
         if os.path.exists(geocode_db_filename):
-            with open(geocode_db_filename, encoding='utf-8') as f:
-                self.geocode_db = json.load(f)
+            try:
+                with open(geocode_db_filename, encoding='utf-8') as f:
+                    self.geocode_db = json.load(f)
+            except Exception: # pylint: disable=broad-exception-caught
+                log.warning("NuWeather: failed to load geocode DB, creating a new one", exc_info=True)
+                self.geocode_db = {}
         else:
             self.log.info("NuWeather: Creating new geocode DB")
             self.geocode_db = {}
@@ -73,8 +78,10 @@ class NuWeather(callbacks.Plugin):
 
     def _flush_geocode_db(self):
         geocode_db_filename = conf.supybot.directories.data.dirize("NuWeather-geocode.json")
-        with open(geocode_db_filename, 'w', encoding='utf-8') as f:
+        tmp_filename = geocode_db_filename + '.tmp'
+        with open(tmp_filename, 'w', encoding='utf-8') as f:
             json.dump(self.geocode_db, f)
+        shutil.move(tmp_filename, geocode_db_filename)
 
     def die(self):
         world.flushers.remove(self.db.flush)
