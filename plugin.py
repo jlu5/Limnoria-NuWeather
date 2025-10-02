@@ -522,7 +522,13 @@ class NuWeather(callbacks.Plugin):
                 fmt = self.registryValue('outputFormat.currentOnly', channel=channel) or DEFAULT_FORMAT_CURRENTONLY
         template = string.Template(fmt)
 
-        return template.safe_substitute(flat_data)
+        output = template.safe_substitute(flat_data)
+
+        if self.registryValue('stripFormatting', channel=channel):
+            output = ircutils.stripFormatting(output)
+        elif self.registryValue('stripColors', channel=channel):
+            output = ircutils.stripColor(output)
+        return output
 
     @wrap([getopts({'user': 'nick', 'backend': None, 'weather-backend': None, 'geocode-backend': None, 'forecast': ''}), additional('text')])
     def weather(self, irc, msg, args, optlist, location):

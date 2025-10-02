@@ -103,6 +103,13 @@ for backend in BACKENDS + GEOCODE_BACKENDS:
 conf.registerGlobalValue(NuWeather.apikeys, 'aqicn',
     registry.String("", _("""Sets the API key for aqicn.org."""), private=True))
 
+conf.registerChannelValue(NuWeather, 'stripColors',
+    registry.Boolean(False, _("""Whether to strip IRC colors from the output.""")))
+
+conf.registerChannelValue(NuWeather, 'stripFormatting',
+    registry.Boolean(False, _("""Whether to strip all IRC formatting from the output.
+        This overrides the stripColors option.""")))
+
 DEFAULT_FORMAT = ('\x02$location\x02 :: $c__condition $c__temperature '
                   '(Humidity: $c__humidity) | \x02Feels like:\x02 $c__feels_like '
                   '| \x02Wind\x02: $c__wind $c__wind_dir | \x02Wind gust\x02: $c__wind_gust '
