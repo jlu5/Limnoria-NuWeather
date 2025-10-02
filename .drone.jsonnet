@@ -6,7 +6,7 @@ local supybot_test(py_version) = {
     steps: [
         {
             name: "test",
-            image: "python:" + py_version + "-bookworm",
+            image: "python:" + py_version + "-trixie",
             commands: [
                 "pip install limnoria",
                 "pip install -r requirements.txt",
@@ -32,6 +32,6 @@ local supybot_test(py_version) = {
 
 [
     # Reduced to oldest and latest supported to avoid API call spam
-    supybot_test("3.8"),
-    supybot_test("3.12"),
+    supybot_test("3.9"),
+    supybot_test("3.13"),
 ]
